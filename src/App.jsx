@@ -13,6 +13,7 @@ function App() {
   const [textNewTask, setTextNewTask] = useState("");
   const [checkbox, setCheckbox] = useState(false);
   const [task, setTask] = useState([]);
+
   function newTask() {
     setModalScreen(true);
   }
@@ -25,6 +26,7 @@ function App() {
   function createTask() {
     if (inputNewTask !== "" && textNewTask !== "") {
       const newTask = {
+        isCompleted: false,
         id: Date.now(),
         title: inputNewTask,
         description: textNewTask,
@@ -175,9 +177,10 @@ function App() {
                   <div className="moderate">
                     {/* Status & Priority */}
                     <div className="flex items-center **:min-w-max gap-2">
-                      <span className="status-label completed">
-                        {" "}
-                        تکمیل شده{" "}
+                      <span
+                        className={`status-label ${item.isCompleted ? "completed" : "pending"}`}
+                      >
+                        {item.isCompleted ? "تکمیل شده" : "در انتظار"}
                       </span>
                       {item.isImportant && (
                         <span className="priority code-1"> مهم </span>
