@@ -38,6 +38,9 @@ function App() {
       alert("لطفا تمامی فیلدها را تکمیل نمایید.");
     }
   }
+  function Completed() {
+    isCompleted: true;
+  }
   return (
     <>
       <header id="header">
@@ -187,7 +190,7 @@ function App() {
                       )}
                     </div>
                     <div className="moderate-btns">
-                      <button className="complete-task">
+                      <button className="complete-task" onClick={Completed}>
                         <i className="fa-solid fa-circle-check" />
                       </button>
                       <button className="undone-btn">
