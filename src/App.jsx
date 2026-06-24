@@ -38,8 +38,12 @@ function App() {
       alert("لطفا تمامی فیلدها را تکمیل نمایید.");
     }
   }
-  function Completed() {
-    isCompleted: true;
+  function Completed(id) {
+    setTask((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, isCompleted: true } : item,
+      ),
+    );
   }
   return (
     <>
@@ -168,8 +172,9 @@ function App() {
         <section id="tasks" className="space-y-30 mt-5">
           <div className="space-y-5">
             <p className="text-sm">تسک های موجود:</p>
-            <div className="space-y-0.5">
-              {task.map((item) => (
+            {task
+              .filter((item) => !item.isCompleted)
+              .map((item) => (
                 <article className="task-card" key={item.id}>
                   <div className="task-content">
                     <div>
@@ -190,7 +195,10 @@ function App() {
                       )}
                     </div>
                     <div className="moderate-btns">
-                      <button className="complete-task" onClick={Completed}>
+                      <button
+                        className="complete-task"
+                        onClick={() => Completed(item.id)}
+                      >
                         <i className="fa-solid fa-circle-check" />
                       </button>
                       <button className="undone-btn">
@@ -200,59 +208,63 @@ function App() {
                   </div>
                 </article>
               ))}
-            </div>
           </div>
+
           <div className="space-y-5">
             <p className="text-sm">تسک‌های تکمیل‌شده</p>
             <div className="space-y-0.5">
               {/* done completed */}
-              <article className="task-card done completed">
-                <div className="task-content">
-                  <div>
-                    <h3>
-                      لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت
-                    </h3>
-                    <p className="task-desc">
-                      لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ،
-                      و با استفاده از طراحان گرافیک است، چاپگرها و
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Status & Priority */}
-                  <div className="flex items-center **:min-w-max gap-2">
-                    <span className="status-label completed"> تکمیل شده </span>
-                    <span className="priority code-1"> مهم </span>
-                  </div>
-                  <div>
-                    <div className="dropdown group">
-                      <button className="opener">
-                        <i className="fa-solid fa-ellipsis-vertical" />
-                      </button>
-                      <div className="menu absolute">
-                        <button className="complete">
-                          <i className="fa-solid fa-check-double" />
-                          تکمیل شده
-                        </button>
-                        <button className="doing">
-                          <i className="fa-solid fa-spinner" /> درحال انجام
-                        </button>
-                        <button className="waiting">
-                          <i className="fa-solid fa-info" /> در انتظار
-                        </button>
-                        <button className="cancel">
-                          <i className="fa-solid fa-circle-stop" />
-                          متوقف کردن
-                        </button>
-                        <button className="trash">
-                          <i className="fa-solid fa-trash" />
-                          حذف کردن
-                        </button>
+              {task
+                .filter((item) => item.isCompleted)
+                .map((item) => (
+                  <article className="task-card done completed" key={item.id}>
+                    <div className="task-content">
+                      <div>
+                        <h3>{item.title}</h3>
+                        <p className="task-desc">{item.description}</p>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </article>
+                    <div className="flex items-center gap-2">
+                      {/* Status & Priority */}
+                      <div className="flex items-center **:min-w-max gap-2">
+                        <span className="status-label completed">
+                          {" "}
+                          تکمیل شده{" "}
+                        </span>
+                        {item.isImportant && (
+                          <span className="priority code-1"> مهم </span>
+                        )}
+                      </div>
+                      <div>
+                        <div className="dropdown group">
+                          <button className="opener">
+                            <i className="fa-solid fa-ellipsis-vertical" />
+                          </button>
+                          <div className="menu absolute">
+                            <button className="complete">
+                              <i className="fa-solid fa-check-double" />
+                              تکمیل شده
+                            </button>
+                            <button className="doing">
+                              <i className="fa-solid fa-spinner" /> درحال انجام
+                            </button>
+                            <button className="waiting">
+                              <i className="fa-solid fa-info" /> در انتظار
+                            </button>
+                            <button className="cancel">
+                              <i className="fa-solid fa-circle-stop" />
+                              متوقف کردن
+                            </button>
+                            <button className="trash">
+                              <i className="fa-solid fa-trash" />
+                              حذف کردن
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                ))}
             </div>
           </div>
         </section>
