@@ -304,7 +304,10 @@ function App() {
             <span className="font-IOS-Font! text-sm absolute left-0 right-0 mx-auto! max-w-max! text-[#2b2929] select-none!">
               ایجاد برنامه جدید
             </span>
-            <div className="btns *:size-3.5 *:cursor-pointer *:rounded-full">
+            <div
+              className="btns *:size-3.5 *:cursor-pointer *:rounded-full"
+              onClick={() => setModalScreen(false)}
+            >
               <button id="modal-close-button" className="" />
             </div>
           </header>
