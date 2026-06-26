@@ -13,6 +13,7 @@ function App() {
   const [textNewTask, setTextNewTask] = useState("");
   const [checkbox, setCheckbox] = useState(false);
   const [task, setTask] = useState([]);
+  const [filter, setFilter] = useState("all");
 
   function newTask() {
     setModalScreen(true);
@@ -44,6 +45,10 @@ function App() {
         item.id === id ? { ...item, isCompleted: true } : item,
       ),
     );
+  }
+
+  function remove(id) {
+    setTask((prev) => prev.filter((item) => item.id !== id));
   }
   return (
     <>
@@ -148,13 +153,25 @@ function App() {
                   <p className="text-start text-xs opacity-60">نمایش فقط</p>
                 </div>
                 <div className="py-1">
-                  <label htmlFor="dd-toggle" className="menu-item">
+                  <label
+                    htmlFor="dd-toggle"
+                    className="menu-item"
+                    onClick={() => setFilter("all")}
+                  >
                     همه
                   </label>
-                  <label htmlFor="dd-toggle" className="menu-item">
+                  <label
+                    htmlFor="dd-toggle"
+                    className="menu-item"
+                    onClick={() => setFilter("completed")}
+                  >
                     تکمیل شده ها
                   </label>
-                  <label htmlFor="dd-toggle" className="menu-item">
+                  <label
+                    htmlFor="dd-toggle"
+                    className="menu-item"
+                    onClick={() => setFilter("pending")}
+                  >
                     در انتظار انجام
                   </label>
                 </div>
@@ -170,103 +187,110 @@ function App() {
           </div>
         </div>
         <section id="tasks" className="space-y-30 mt-5">
-          <div className="space-y-5">
-            <p className="text-sm">تسک های موجود:</p>
-            {task
-              .filter((item) => !item.isCompleted)
-              .map((item) => (
-                <article className="task-card" key={item.id}>
-                  <div className="task-content">
-                    <div>
-                      <h3>{item.title}</h3>
-                      <p className="task-desc">{item.description}</p>
-                    </div>
-                  </div>
-                  <div className="moderate">
-                    {/* Status & Priority */}
-                    <div className="flex items-center **:min-w-max gap-2">
-                      <span
-                        className={`status-label ${item.isCompleted ? "completed" : "pending"}`}
-                      >
-                        {item.isCompleted ? "تکمیل شده" : "در انتظار"}
-                      </span>
-                      {item.isImportant && (
-                        <span className="priority code-1"> مهم </span>
-                      )}
-                    </div>
-                    <div className="moderate-btns">
-                      <button
-                        className="complete-task"
-                        onClick={() => Completed(item.id)}
-                      >
-                        <i className="fa-solid fa-circle-check" />
-                      </button>
-                      <button className="undone-btn">
-                        <i className="fa-solid fa-xmark" />
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-          </div>
-
-          <div className="space-y-5">
-            <p className="text-sm">تسک‌های تکمیل‌شده</p>
-            <div className="space-y-0.5">
-              {/* done completed */}
+          {(filter === "all" || filter === "pending") && (
+            <div className="space-y-5">
+              <p className="text-sm">تسک های موجود:</p>
               {task
-                .filter((item) => item.isCompleted)
+                .filter((item) => !item.isCompleted)
                 .map((item) => (
-                  <article className="task-card done completed" key={item.id}>
+                  <article className="task-card" key={item.id}>
                     <div className="task-content">
                       <div>
                         <h3>{item.title}</h3>
                         <p className="task-desc">{item.description}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="moderate">
                       {/* Status & Priority */}
                       <div className="flex items-center **:min-w-max gap-2">
-                        <span className="status-label completed">
-                          {" "}
-                          تکمیل شده{" "}
+                        <span
+                          className={`status-label ${item.isCompleted ? "completed" : "pending"}`}
+                        >
+                          {item.isCompleted ? "تکمیل شده" : "در انتظار"}
                         </span>
                         {item.isImportant && (
                           <span className="priority code-1"> مهم </span>
                         )}
                       </div>
-                      <div>
-                        <div className="dropdown group">
-                          <button className="opener">
-                            <i className="fa-solid fa-ellipsis-vertical" />
-                          </button>
-                          <div className="menu absolute">
-                            <button className="complete">
-                              <i className="fa-solid fa-check-double" />
-                              تکمیل شده
-                            </button>
-                            <button className="doing">
-                              <i className="fa-solid fa-spinner" /> درحال انجام
-                            </button>
-                            <button className="waiting">
-                              <i className="fa-solid fa-info" /> در انتظار
-                            </button>
-                            <button className="cancel">
-                              <i className="fa-solid fa-circle-stop" />
-                              متوقف کردن
-                            </button>
-                            <button className="trash">
-                              <i className="fa-solid fa-trash" />
-                              حذف کردن
-                            </button>
-                          </div>
-                        </div>
+                      <div className="moderate-btns">
+                        <button
+                          className="complete-task"
+                          onClick={() => Completed(item.id)}
+                        >
+                          <i className="fa-solid fa-circle-check" />
+                        </button>
+                        <button className="undone-btn">
+                          <i
+                            className="fa-solid fa-xmark"
+                            onClick={() => remove(item.id)}
+                          />
+                        </button>
                       </div>
                     </div>
                   </article>
                 ))}
             </div>
-          </div>
+          )}
+          {(filter === "all" || filter === "completed") && (
+            <div className="space-y-5">
+              <p className="text-sm">تسک‌های تکمیل‌شده</p>
+              <div className="space-y-0.5">
+                {/* done completed */}
+                {task
+                  .filter((item) => item.isCompleted)
+                  .map((item) => (
+                    <article className="task-card done completed" key={item.id}>
+                      <div className="task-content">
+                        <div>
+                          <h3>{item.title}</h3>
+                          <p className="task-desc">{item.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {/* Status & Priority */}
+                        <div className="flex items-center **:min-w-max gap-2">
+                          <span className="status-label completed">
+                            {" "}
+                            تکمیل شده{" "}
+                          </span>
+                          {item.isImportant && (
+                            <span className="priority code-1"> مهم </span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="dropdown group">
+                            <button className="opener">
+                              <i className="fa-solid fa-ellipsis-vertical" />
+                            </button>
+                            <div className="menu absolute">
+                              <button className="complete">
+                                <i className="fa-solid fa-check-double" />
+                                تکمیل شده
+                              </button>
+                              <button className="doing">
+                                <i className="fa-solid fa-spinner" /> درحال
+                                انجام
+                              </button>
+                              <button className="waiting">
+                                <i className="fa-solid fa-info" /> در انتظار
+                              </button>
+                              <button className="cancel">
+                                <i className="fa-solid fa-circle-stop" />
+                                متوقف کردن
+                              </button>
+                              <button className="trash">
+                                <i className="fa-solid fa-trash" />
+                                حذف کردن
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+              </div>
+            </div>
+          )}
         </section>
       </main>
       {/* Create Modal Screen */}
