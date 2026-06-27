@@ -148,12 +148,25 @@ function App() {
             <div className="dropdown">
               <input id="dd-toggle" type="checkbox" hidden="" />
               <label className="dd-btn" htmlFor="dd-toggle">
-                <span>نمایش فقط</span>
+                <span>
+                  {" "}
+                  {filter === "all"
+                    ? "همه"
+                    : filter === "completed"
+                      ? "تکمیل شده ها"
+                      : "در انتظار انجام"}{" "}
+                </span>
                 <i className="fa-solid fa-chevron-down" />
               </label>
               <div className="dropdown_menu" role="menu">
                 <div className="dropdown-label">
-                  <p className="text-start text-xs opacity-60">نمایش فقط</p>
+                  <p className="text-start text-xs opacity-60">
+                    {filter === "all"
+                      ? "همه"
+                      : filter === "completed"
+                        ? "تکمیل شده ها"
+                        : "در انتظار انجام"}
+                  </p>
                 </div>
                 <div className="py-1">
                   <label
