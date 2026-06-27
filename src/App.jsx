@@ -6,6 +6,7 @@ import "/public/css/header.css";
 import "/public/css/index.css";
 import "/public/css/modal.css";
 import "/public/css/tasks.css";
+import Nothing from "./Nothing";
 
 function App() {
   const [modalScreen, setModalScreen] = useState(false);
@@ -14,6 +15,8 @@ function App() {
   const [checkbox, setCheckbox] = useState(false);
   const [task, setTask] = useState([]);
   const [filter, setFilter] = useState("all");
+  const pendingTasks = task.filter((item) => !item.isCompleted);
+  const completedTasks = task.filter((item) => item.isCompleted);
 
   function newTask() {
     setModalScreen(true);
@@ -187,12 +190,14 @@ function App() {
           </div>
         </div>
         <section id="tasks" className="space-y-30 mt-5">
-          {(filter === "all" || filter === "pending") && (
-            <div className="space-y-5">
-              <p className="text-sm">تسک های موجود:</p>
-              {task
-                .filter((item) => !item.isCompleted)
-                .map((item) => (
+          {task.length === 0 && <Nothing />}
+
+          {(filter === "all" || filter === "pending") &&
+            pendingTasks.length > 0 && (
+              <div className="space-y-5">
+                <p className="text-sm">تسک های موجود:</p>
+
+                {pendingTasks.map((item) => (
                   <article className="task-card" key={item.id}>
                     <div className="task-content">
                       <div>
@@ -200,18 +205,16 @@ function App() {
                         <p className="task-desc">{item.description}</p>
                       </div>
                     </div>
+
                     <div className="moderate">
-                      {/* Status & Priority */}
                       <div className="flex items-center **:min-w-max gap-2">
-                        <span
-                          className={`status-label ${item.isCompleted ? "completed" : "pending"}`}
-                        >
-                          {item.isCompleted ? "تکمیل شده" : "در انتظار"}
-                        </span>
+                        <span className="status-label pending">در انتظار</span>
+
                         {item.isImportant && (
-                          <span className="priority code-1"> مهم </span>
+                          <span className="priority code-1">مهم</span>
                         )}
                       </div>
+
                       <div className="moderate-btns">
                         <button
                           className="complete-task"
@@ -219,26 +222,27 @@ function App() {
                         >
                           <i className="fa-solid fa-circle-check" />
                         </button>
-                        <button className="undone-btn">
-                          <i
-                            className="fa-solid fa-xmark"
-                            onClick={() => remove(item.id)}
-                          />
+
+                        <button
+                          className="undone-btn"
+                          onClick={() => remove(item.id)}
+                        >
+                          <i className="fa-solid fa-xmark" />
                         </button>
                       </div>
                     </div>
                   </article>
                 ))}
-            </div>
-          )}
-          {(filter === "all" || filter === "completed") && (
-            <div className="space-y-5">
-              <p className="text-sm">تسک‌های تکمیل‌شده</p>
-              <div className="space-y-0.5">
-                {/* done completed */}
-                {task
-                  .filter((item) => item.isCompleted)
-                  .map((item) => (
+              </div>
+            )}
+
+          {(filter === "all" || filter === "completed") &&
+            completedTasks.length > 0 && (
+              <div className="space-y-5">
+                <p className="text-sm">تسک‌های تکمیل‌شده</p>
+
+                <div className="space-y-0.5">
+                  {completedTasks.map((item) => (
                     <article className="task-card done completed" key={item.id}>
                       <div className="task-content">
                         <div>
@@ -246,39 +250,49 @@ function App() {
                           <p className="task-desc">{item.description}</p>
                         </div>
                       </div>
+
                       <div className="flex items-center gap-2">
-                        {/* Status & Priority */}
                         <div className="flex items-center **:min-w-max gap-2">
                           <span className="status-label completed">
-                            {" "}
-                            تکمیل شده{" "}
+                            تکمیل شده
                           </span>
+
                           {item.isImportant && (
-                            <span className="priority code-1"> مهم </span>
+                            <span className="priority code-1">مهم</span>
                           )}
                         </div>
+
                         <div>
                           <div className="dropdown group">
                             <button className="opener">
                               <i className="fa-solid fa-ellipsis-vertical" />
                             </button>
+
                             <div className="menu absolute">
                               <button className="complete">
                                 <i className="fa-solid fa-check-double" />
                                 تکمیل شده
                               </button>
+
                               <button className="doing">
-                                <i className="fa-solid fa-spinner" /> درحال
-                                انجام
+                                <i className="fa-solid fa-spinner" />
+                                درحال انجام
                               </button>
+
                               <button className="waiting">
-                                <i className="fa-solid fa-info" /> در انتظار
+                                <i className="fa-solid fa-info" />
+                                در انتظار
                               </button>
+
                               <button className="cancel">
                                 <i className="fa-solid fa-circle-stop" />
                                 متوقف کردن
                               </button>
-                              <button className="trash">
+
+                              <button
+                                className="trash"
+                                onClick={() => remove(item.id)}
+                              >
                                 <i className="fa-solid fa-trash" />
                                 حذف کردن
                               </button>
@@ -288,9 +302,9 @@ function App() {
                       </div>
                     </article>
                   ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </section>
       </main>
       {/* Create Modal Screen */}
